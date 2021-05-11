@@ -8,31 +8,39 @@ import java.util.Arrays;
 
 public class ShellHelper {
 
-    protected int result;
+    public static int SUCCESS_CODE = 0;
 
-    protected String resultString = "";
+    public static int FAILURE_CODE = -1;
 
+    protected int code;
+
+    protected String result = "";
 
     public ShellHelper() {
-        result = -1;
-        resultString = "";
+        code = FAILURE_CODE;
+        result = "";
     }
 
     public String getResult() {
-        return resultString;
+        return result;
     }
 
-    public int executeSu(String command) {
+    public int getCode() {
+        return code;
+    }
+
+    public ShellHelper executeSu(String command) {
         return execute(command, true);
     }
 
-    public int execute(String command) {
+    public ShellHelper execute(String command) {
         return execute(command, false);
     }
 
-    public int execute(String command, Boolean isRoot) {
+    public ShellHelper execute(String command, Boolean isRoot) {
 
-        int res = -1;
+        int code = -1;
+
         StringBuilder result = new StringBuilder();
 
         Process process = null;
@@ -62,9 +70,9 @@ public class ShellHelper {
                 result.append("error: ").append(line).append("\n");
             }
 
-            res = process.waitFor();
+            code = process.waitFor();
 
-            if (res != 0) {
+            if (code != 0) {
                 result.append(command).append(" execute error!").append("\n");
             }
 
@@ -105,10 +113,10 @@ public class ShellHelper {
                 result.append(Arrays.toString(e.getStackTrace())).append("\n");
             }
 
-            this.resultString = result.toString();
-            this.result = res;
+            this.result = result.toString();
+            this.code = code;
         }
 
-        return res;
+        return this;
     }
 }
