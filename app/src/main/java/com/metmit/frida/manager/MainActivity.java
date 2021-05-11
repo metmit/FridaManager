@@ -47,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        // 获取root权限
-        ShellHelper.executeSu("ls /");
+        new ShellHelper().executeSu("ps");
     }
 
     @Override

@@ -24,7 +24,7 @@ public class Frida {
         };
 
         for (String command : commands) {
-            ShellHelper.executeSu(command);
+            new ShellHelper().executeSu(command);
         }
 
         return true;
