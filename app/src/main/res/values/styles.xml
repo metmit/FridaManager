@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Settings.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="layout_constrainedWidth">true</item>
+        <item name="layout_constraintHorizontal_bias">0</item>
+        <item name="layout_constraintHorizontal_weight">4</item>
+    </style>
+    <style name="Settings.Switch">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="layout_constraintHorizontal_bias">1</item>
+        <item name="layout_constraintHorizontal_weight">1</item>
+    </style>
+
+    <style name="Settings">settings</style>
+
+</resources>
