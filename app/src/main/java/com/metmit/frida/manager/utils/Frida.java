@@ -16,10 +16,17 @@ public class Frida {
             return false;
         }
 
-        ShellHelper.executeSu("chmod +x " + servicePath + commandFile);
+        String[] commands = {
+                "ls -al " + servicePath + commandFile,
+                "chmod +x " + servicePath + commandFile,
+                // servicePath + commandFile + " &",
+                String.format("%s%s > %s%s 2>&1 &", servicePath, commandFile, servicePath, "frida-server.log")
+        };
 
-        ShellHelper.executeSu(servicePath + commandFile + " &");
+        for (String command : commands) {
+            ShellHelper.executeSu(command);
+        }
 
-        return false;
+        return true;
     }
 }
