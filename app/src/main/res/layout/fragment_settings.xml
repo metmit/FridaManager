@@ -5,32 +5,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+    <Switch
+        android:id="@+id/settings_switch_boot_frida"
+        style="@style/Settings.Switch"
         android:layout_marginTop="20dp"
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:checked="false"
+        android:text="@string/settings_boot_frida"
+        android:textOff="@string/switch_false"
+        android:textOn="@string/switch_true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/settings_v1"
-            style="@style/Settings.TextView"
-            android:text="@string/settings_boot_frida"
-            app:layout_constraintEnd_toStartOf="@+id/switcher_2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Switch
-            android:id="@+id/switcher_2"
-            style="@style/Settings.Switch"
-            android:checked="false"
-            android:textOff="@string/switch_false"
-            android:textOn="@string/switch_true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/settings_frida_port"
+        style="@style/Settings.TextView"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_baseline_chevron_right"
+        android:focusable="true"
+        android:text="@string/settings_frida_port"
+        android:contentDescription="@string/settings_frida_port"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_switch_boot_frida" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

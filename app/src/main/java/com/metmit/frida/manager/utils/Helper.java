@@ -3,6 +3,8 @@ package com.metmit.frida.manager.utils;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Helper {
 
@@ -13,6 +15,15 @@ public class Helper {
                 return false;
             }
         } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isPortAvailable(int port) {
+        try {
+            new ServerSocket(port).close();
+        } catch (IOException e) {
             return false;
         }
         return true;

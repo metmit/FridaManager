@@ -11,8 +11,10 @@
     <string name="menu_settings">设置</string>
     <string name="menu_about">关于</string>
 
-    <string name="switch_false">否</string>
     <string name="switch_true">是</string>
+    <string name="switch_false">否</string>
+    <string name="button_confirm">确认</string>
+    <string name="button_cancel">取消</string>
 
     <string name="home_frida_status">Frida状态</string>
     <string name="home_frida_version">Frida版本：%s</string>
@@ -23,4 +25,8 @@
     <string name="home_abi">系统架构：%s</string>
 
     <string name="settings_boot_frida">是否开机启动Frida？</string>
+    <string name="settings_frida_port">Frida端口号：</string>
+    <string name="settings_bound_port">绑定端口</string>
+
+
 </resources>

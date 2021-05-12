@@ -11,6 +11,8 @@ public class SpHelper {
 
     public static String SP_KEY_BOOT_FRIDA = "boot_frida";
 
+    public static String SP_KEY_FRIDA_PORT = "frida_port";
+
     protected Context context;
     protected String name;
     protected SharedPreferences sp;
