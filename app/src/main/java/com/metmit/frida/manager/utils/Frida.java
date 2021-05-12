@@ -10,6 +10,8 @@ public class Frida {
 
     public static int DEFAULT_PORT = 27042;
 
+    protected static String version;
+
     protected static String servicePath = "/data/local/tmp/";
 
     protected static String commandFile = "frida-server";
@@ -72,25 +74,32 @@ public class Frida {
             return null;
         }
 
-        ShellHelper shellHelper = new ShellHelper();
-        shellHelper.executeSu("chmod +x " + servicePath + commandFile);
-
-        ShellHelper result = shellHelper.executeSu(servicePath + commandFile + " --version");
-        if (result.getCode() != 0) {
-            return null;
+        if (version != null) {
+            return version;
         }
 
-        return result.getResult();
+        ShellHelper shellHelper = new ShellHelper();
+        if (Container.isRoot) {
+            shellHelper.executeSu("chmod +x " + servicePath + commandFile);
+            ShellHelper result = shellHelper.executeSu(servicePath + commandFile + " --version");
+            if (result.getCode() != 0) {
+                return null;
+            }
+            version = result.getResult();
+        }
+
+        return version;
     }
 
     public static boolean isRunning() {
-        if (getProcessIds().size() > 0) {
-            return true;
+        if (Container.isRoot) {
+            if (getProcessIds().size() > 0) {
+                return true;
+            }
         }
         try {
             new ServerSocket(DEFAULT_PORT).close();
         } catch (IOException e) {
-            Helper.log(e.getMessage());
             return true;
         }
         return false;

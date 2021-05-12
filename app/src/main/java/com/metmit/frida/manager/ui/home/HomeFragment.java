@@ -14,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.metmit.frida.manager.R;
+import com.metmit.frida.manager.utils.Container;
 import com.metmit.frida.manager.utils.Frida;
-import com.metmit.frida.manager.utils.ShellHelper;
 import com.metmit.frida.manager.utils.SpHelper;
 
 public class HomeFragment extends Fragment {
@@ -63,12 +63,7 @@ public class HomeFragment extends Fragment {
         // root 权限
         TextView textViewRoot = rootView.findViewById(R.id.textViewRoot);
         String homeRootString = getString(R.string.home_root_permission);
-        if (new ShellHelper().executeSu("ps").getCode() == ShellHelper.SUCCESS_CODE) {
-            homeRootString = String.format(homeRootString, "已获得");
-        } else {
-            homeRootString = String.format(homeRootString, "未获得");
-        }
-        textViewRoot.setText(homeRootString);
+        textViewRoot.setText(String.format(homeRootString, Container.isRoot ? "已获得" : "未获得"));
 
         SpHelper spHelper = new SpHelper(getContext(), SpHelper.SP_NAME_SETTINGS);
 
@@ -91,7 +86,7 @@ public class HomeFragment extends Fragment {
         // 系统版本
         TextView textViewSystem = rootView.findViewById(R.id.textViewSystemVersion);
         String homeSystemString = getString(R.string.home_system_version);
-        textViewSystem.setText(String.format(homeBootString, String.format(" Android %s (API %s)", Build.VERSION.RELEASE, Build.VERSION.SDK_INT)));
+        textViewSystem.setText(String.format(homeSystemString, String.format(" Android %s (API %s)", Build.VERSION.RELEASE, Build.VERSION.SDK_INT)));
 
         // 系统架构
         TextView textViewAbi= rootView.findViewById(R.id.textViewAbi);
