@@ -1,5 +1,6 @@
 package com.metmit.frida.manager.ui.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.metmit.frida.manager.MainActivity;
 import com.metmit.frida.manager.R;
 import com.metmit.frida.manager.utils.Frida;
 import com.metmit.frida.manager.utils.Helper;
@@ -22,9 +25,13 @@ import com.metmit.frida.manager.utils.SpHelper;
 
 public class SettingsFragment extends Fragment {
 
+    private static final int PICK_FRIDA_REQUEST_CODE = 1001;
+
     SpHelper spHelper;
 
     View rootView;
+
+    Window dialogWindow;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +51,9 @@ public class SettingsFragment extends Fragment {
 
         // 绑定端口号
         initFridaPort();
+
+        // 安装
+        initInstall();
 
 
         return rootView;
@@ -96,6 +106,70 @@ public class SettingsFragment extends Fragment {
                 alertDialog.dismiss();
             }
         });
-
     }
+
+    protected void initInstall() {
+
+        String version = Frida.getVersion();
+
+        TextView textViewInstall = rootView.findViewById(R.id.settings_install);
+        textViewInstall.setText(String.format("%s%s", textViewInstall.getContentDescription(), version));
+
+        textViewInstall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFridaInstallDialog();
+            }
+        });
+    }
+
+    protected void showFridaInstallDialog() {
+        final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.show();
+        alertDialog.setContentView(R.layout.settings_install_frida);
+
+        dialogWindow = alertDialog.getWindow();
+
+        String version = Frida.getVersion();
+
+        TextView textViewInstall = dialogWindow.findViewById(R.id.settings_dialog_version);
+        textViewInstall.setText(String.format("%s%s", textViewInstall.getContentDescription(), version));
+
+        TextView textViewLocal = dialogWindow.findViewById(R.id.settings_dialog_install_local);
+        textViewLocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("*/*");
+                startActivityForResult(intent, PICK_FRIDA_REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_FRIDA_REQUEST_CODE && resultCode == MainActivity.RESULT_OK) {
+            if (data != null && data.getData() != null) {
+                try {
+                    Frida.installLocal(getContext(), data.getData());
+
+                    TextView textViewInstallLocal = dialogWindow.findViewById(R.id.settings_dialog_install_local);
+                    textViewInstallLocal.setText(String.format("%s%s", textViewInstallLocal.getContentDescription(), "成功"));
+
+                    Frida.version = null;
+                    String version = Frida.getVersion();
+
+                    TextView textViewInstallVersion = dialogWindow.findViewById(R.id.settings_dialog_version);
+                    textViewInstallVersion.setText(String.format("%s%s", textViewInstallVersion.getContentDescription(), version));
+
+
+                } catch (Exception e) {
+                    Toast.makeText(getContext(), "安装失败：" + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
 }

@@ -1,8 +1,14 @@
 package com.metmit.frida.manager.utils;
 
+import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 
+import org.tukaani.xz.XZInputStream;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
@@ -10,7 +16,7 @@ public class Frida {
 
     public static int DEFAULT_PORT = 27042;
 
-    protected static String version;
+    public static String version;
 
     protected static String servicePath = "/data/local/tmp/";
 
@@ -18,6 +24,62 @@ public class Frida {
 
     public static boolean isExistCommandFile() {
         return Helper.isExistFile(servicePath + commandFile);
+    }
+
+    public static boolean installLocal(Context context, Uri uri) {
+
+        String fileType = PickFileHelper.getFileType(context, uri);
+        if (!fileType.equals("application/octet-stream")) {
+            return false;
+        }
+        String fileName = PickFileHelper.getFileName(context, uri);
+        InputStream inputStream;
+        inputStream = PickFileHelper.getInputStream(context, uri);
+
+        if (fileName.endsWith(".xz")) {
+            try {
+                inputStream = new XZInputStream(inputStream);
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+        try {
+            String cacheFileName = context.getCacheDir().getAbsolutePath() + File.separator + "frida-server";
+
+            File cacheFile = PickFileHelper.saveFile(inputStream, cacheFileName); // xz too slow
+
+            String[] commands = {
+                    "chmod +x " + cacheFileName,
+                    cacheFileName + " --version"
+            };
+
+            for (String command: commands) {
+                ShellHelper cacheShell = new ShellHelper().execute(command);
+                if (cacheShell.getCode() != ShellHelper.SUCCESS_CODE) {
+                    return false;
+                }
+            }
+
+            boolean running = isRunning();
+
+            if (running) {
+                stopService();
+            }
+
+            ShellHelper installShell = new ShellHelper().executeSu("cp -r " + cacheFile.getAbsolutePath() + " " + servicePath);
+
+            if (installShell.getCode() != ShellHelper.SUCCESS_CODE) {
+                return false;
+            }
+
+            if (running) {
+                startService();
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean startService() {

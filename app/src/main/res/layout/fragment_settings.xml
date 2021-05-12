@@ -29,5 +29,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_switch_boot_frida" />
 
+    <TextView
+        android:id="@+id/settings_install"
+        style="@style/Settings.TextView"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_baseline_chevron_right"
+        android:focusable="true"
+        android:text="@string/settings_install_frida"
+        android:contentDescription="@string/settings_install_frida"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_frida_port" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
