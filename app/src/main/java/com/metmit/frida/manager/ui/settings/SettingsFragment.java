@@ -3,6 +3,7 @@ package com.metmit.frida.manager.ui.settings;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.metmit.frida.manager.MainActivity;
 import com.metmit.frida.manager.R;
 import com.metmit.frida.manager.utils.Frida;
 import com.metmit.frida.manager.utils.Helper;
-import com.metmit.frida.manager.utils.HttpHelper;
 import com.metmit.frida.manager.utils.PickFileHelper;
 import com.metmit.frida.manager.utils.SpHelper;
-
-import java.io.File;
 
 public class SettingsFragment extends Fragment {
 
@@ -129,7 +128,6 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-
     protected Uri installLocalUri;
 
     protected void showFridaInstallDialog() {
@@ -151,17 +149,20 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        ConstraintLayout constraintLayoutLocal = dialogWindow.findViewById(R.id.settings_install_dialog_local_box);
+        ConstraintLayout constraintLayoutOnline = dialogWindow.findViewById(R.id.settings_install_dialog_online_box);
+
         RadioGroup radioGroup = dialogWindow.findViewById(R.id.settings_install_dialog_radio_group);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.settings_install_dialog_radio_local) {
-                    textViewOnline.setVisibility(View.INVISIBLE);
-                    textViewLocal.setVisibility(View.VISIBLE);
+                    constraintLayoutOnline.setVisibility(View.INVISIBLE);
+                    constraintLayoutLocal.setVisibility(View.VISIBLE);
                 }
                 if (checkedId == R.id.settings_install_dialog_radio_online) {
-                    textViewLocal.setVisibility(View.INVISIBLE);
-                    textViewOnline.setVisibility(View.VISIBLE);
+                    constraintLayoutLocal.setVisibility(View.INVISIBLE);
+                    constraintLayoutOnline.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -172,24 +173,42 @@ public class SettingsFragment extends Fragment {
 
                 int radioCheckedId = radioGroup.getCheckedRadioButtonId();
 
-                if (radioCheckedId == R.id.settings_install_dialog_radio_local) {
-                    if (installLocalUri != null) {
-                        Frida.installLocal(getContext(), installLocalUri);
-                    }
-                }
-                if (radioCheckedId == R.id.settings_install_dialog_radio_online) {
-                    String version = textViewOnline.getText().toString();
-                    String xzFilename = Frida.getXzFileName(version);
-                    String cacheFileName = getContext().getCacheDir().getAbsolutePath() + File.separator + xzFilename;
-                    String url = String.format("https://github.com/frida/frida/releases/download/%s/%s", version, xzFilename);
-                    File file = HttpHelper.download(url, cacheFileName);
-                    if (file != null)
-                        Helper.log(file.toString());
+                if (installLocalUri == null) {
+                    Toast.makeText(getContext(), "前选择文件", Toast.LENGTH_LONG).show();
+                    return;
                 }
 
+                if (radioCheckedId != R.id.settings_install_dialog_radio_local) {
+                    Toast.makeText(getContext(), "请重新从本地安装", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Frida.installLocal(getContext(), installLocalUri);
+
                 Frida.version = null;
-                alertDialog.dismiss();
                 initInstall();
+                alertDialog.dismiss();
+            }
+        });
+
+        dialogWindow.findViewById(R.id.go_to_browser).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String version = textViewOnline.getText().toString();
+                String url = "";
+                if (TextUtils.isEmpty(version)) {
+                    url = "https://github.com/frida/frida/releases";
+                } else {
+                    url = String.format("https://github.com/frida/frida/releases/download/%s/%s", version, Frida.getXzFileName(version));
+                }
+                try {
+                    Intent intent = new Intent();
+                    intent.setData(Uri.parse(url));
+                    intent.setAction(Intent.ACTION_VIEW);
+                    getContext().startActivity(Intent.createChooser(intent, "请选择浏览器"));
+                } catch (Exception e) {
+                    Toast.makeText(getContext(), "打开浏览器失败", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -208,7 +227,7 @@ public class SettingsFragment extends Fragment {
                     textViewInstallLocal.setText(PickFileHelper.getFileName(getContext(), installLocalUri));
 
                 } catch (Exception e) {
-                    Toast.makeText(getContext(), "安装失败：" + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "选择文件失败：" + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }

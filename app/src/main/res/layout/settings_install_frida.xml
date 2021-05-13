@@ -10,9 +10,9 @@
         android:id="@+id/settings_install_dialog_radio_group"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +22,8 @@
             android:id="@+id/settings_install_dialog_radio_local"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:checked="true"
             android:layout_weight="1"
+            android:checked="true"
             android:text="@string/settings_install_dialog_local" />
 
         <RadioButton
@@ -34,54 +34,101 @@
             android:text="@string/settings_install_dialog_online" />
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/settings_install_dialog_local"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/settings_install_dialog_local_box"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:clickable="true"
-        android:contentDescription="@string/settings_install_dialog_local"
-        android:drawableEnd="@drawable/ic_baseline_chevron_right"
-        android:focusable="true"
-        android:gravity="center_vertical|start"
-        android:text="@string/settings_install_dialog_pick_file"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_install_dialog_radio_group" />
-
-    <EditText
-        android:id="@+id/settings_install_dialog_online"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:autofillHints="@string/settings_install_dialog_online_version"
-        android:hint="@string/settings_install_dialog_online_version"
-        android:text=""
-        android:textSize="18sp"
-        android:inputType="text"
-        android:maxLength="10"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_install_dialog_radio_group" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/button_confirm"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_install_dialog_online"
-        app:layout_constraintVertical_bias="1.0" />
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/settings_install_dialog_radio_group">
+
+        <TextView
+            android:id="@+id/settings_install_dialog_local"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:contentDescription="@string/settings_install_dialog_local"
+            android:drawableEnd="@drawable/ic_baseline_chevron_right"
+            android:focusable="true"
+            android:gravity="center_vertical|start"
+            android:text="@string/settings_install_dialog_pick_file"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/button_confirm"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_install_dialog_local"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/settings_install_dialog_online_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@+id/settings_install_dialog_radio_group">
+
+        <EditText
+            android:id="@+id/settings_install_dialog_online"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:autofillHints="@string/settings_install_dialog_online_version"
+            android:hint="@string/settings_install_dialog_online_version"
+            android:inputType="text"
+            android:maxLength="10"
+            android:text=""
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/go_to_browser"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/go_to_browser"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="@string/button_forward"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/settings_install_dialog_online_desc"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:maxLength="10"
+            android:gravity="center_vertical|start"
+            android:text="@string/settings_install_dialog_online_version_desc"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/go_to_browser" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

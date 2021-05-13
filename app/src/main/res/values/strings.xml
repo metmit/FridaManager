@@ -13,6 +13,7 @@
 
     <string name="switch_true">是</string>
     <string name="switch_false">否</string>
+    <string name="button_forward">前往</string>
     <string name="button_confirm">确认</string>
     <string name="button_cancel">取消</string>
 
@@ -32,6 +33,7 @@
     <string name="settings_install_dialog_local">本地安装</string>
     <string name="settings_install_dialog_pick_file">选择文件</string>
     <string name="settings_install_dialog_online">在线安装</string>
-    <string name="settings_install_dialog_online_version">输入如[12.10.4]的版本号</string>
+    <string name="settings_install_dialog_online_version">版本号如：12.10.4</string>
+    <string name="settings_install_dialog_online_version_desc">不填版本号将跳到列表页</string>
 
 </resources>
