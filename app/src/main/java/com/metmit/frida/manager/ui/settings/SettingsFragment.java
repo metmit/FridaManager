@@ -65,7 +65,8 @@ public class SettingsFragment extends Fragment {
     }
 
     protected void initFridaPort() {
-        int port = spHelper.getSp().getInt(SpHelper.SP_KEY_FRIDA_PORT, Frida.DEFAULT_PORT);
+
+        int port = Frida.getPort();
 
         TextView textViewPort = rootView.findViewById(R.id.settings_frida_port);
         textViewPort.setText(String.format("%s%s", textViewPort.getContentDescription(), port));

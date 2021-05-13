@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.metmit.frida.manager.MyApplication;
+
 import org.tukaani.xz.XZInputStream;
 
 import java.io.File;
@@ -105,8 +107,7 @@ public class Frida {
         String[] commands = {
                 "ls -al " + servicePath + commandFile,
                 "chmod +x " + servicePath + commandFile,
-                // servicePath + commandFile + " &",
-                String.format("%s%s > %s%s 2>&1 &", servicePath, commandFile, servicePath, "frida-server.log")
+                String.format("%s%s -l 0.0.0.0:%s -D", servicePath, commandFile, getPort())
         };
 
         for (String command : commands) {
@@ -126,9 +127,14 @@ public class Frida {
 
         ArrayList<String> result = new ArrayList<>();
         for (String pid : temp) {
-            String tmp = pid.replace(" ", "").trim();
+            String tmp = pid.trim();
             if (TextUtils.isEmpty(tmp)) continue;
-            result.add(tmp);
+            String[] pids = tmp.split(" ");
+            for (String p: pids) {
+                p = p.replace(" ", "").trim();
+                if (TextUtils.isEmpty(p)) continue;
+                result.add(p);
+            }
         }
         return result;
     }
@@ -179,5 +185,9 @@ public class Frida {
             return true;
         }
         return false;
+    }
+
+    public static int getPort() {
+        return new SpHelper(MyApplication.getContext(), SpHelper.SP_NAME_SETTINGS).getSp().getInt(SpHelper.SP_KEY_FRIDA_PORT, Frida.DEFAULT_PORT);
     }
 }
