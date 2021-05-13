@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -112,10 +113,10 @@ public class SettingsFragment extends Fragment {
 
     protected void initInstall() {
 
-        String version = Frida.getVersion();
+        installLocalUri = null;
 
         TextView textViewInstall = rootView.findViewById(R.id.settings_install);
-        textViewInstall.setText(String.format("%s%s", textViewInstall.getContentDescription(), version));
+        textViewInstall.setText(String.format("%s%s", textViewInstall.getContentDescription(), Frida.getVersion()));
 
         textViewInstall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +129,6 @@ public class SettingsFragment extends Fragment {
 
     protected Uri installLocalUri;
 
-
     protected void showFridaInstallDialog() {
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.show();
@@ -136,12 +136,9 @@ public class SettingsFragment extends Fragment {
 
         dialogWindow = alertDialog.getWindow();
 
-        String version = Frida.getVersion();
+        EditText textViewOnline = dialogWindow.findViewById(R.id.settings_install_dialog_online);
 
-        TextView textViewInstall = dialogWindow.findViewById(R.id.settings_dialog_version);
-        textViewInstall.setText(String.format("%s%s", textViewInstall.getContentDescription(), version));
-
-        TextView textViewLocal = dialogWindow.findViewById(R.id.settings_dialog_install_local);
+        TextView textViewLocal = dialogWindow.findViewById(R.id.settings_install_dialog_local);
         textViewLocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,26 +148,40 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        RadioGroup radioGroup = dialogWindow.findViewById(R.id.settings_install_dialog_radio_group);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.settings_install_dialog_radio_local) {
+                    textViewOnline.setVisibility(View.INVISIBLE);
+                    textViewLocal.setVisibility(View.VISIBLE);
+                }
+                if (checkedId == R.id.settings_install_dialog_radio_online) {
+                    textViewLocal.setVisibility(View.INVISIBLE);
+                    textViewOnline.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         dialogWindow.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (installLocalUri != null) {
-                    Frida.installLocal(getContext(), installLocalUri);
+                int radioCheckedId = radioGroup.getCheckedRadioButtonId();
 
-                    Frida.version = null;
-                    String version = Frida.getVersion();
-
-                    TextView textViewInstallVersion = dialogWindow.findViewById(R.id.settings_dialog_version);
-                    textViewInstallVersion.setText(String.format("%s%s", textViewInstallVersion.getContentDescription(), version));
-                    alertDialog.dismiss();
+                if (radioCheckedId == R.id.settings_install_dialog_radio_local) {
+                    if (installLocalUri != null) {
+                        Frida.installLocal(getContext(), installLocalUri);
+                    }
                 }
+                if (radioCheckedId == R.id.settings_install_dialog_radio_online) {
+                }
+
+                Frida.version = null;
+                alertDialog.dismiss();
+                initInstall();
             }
         });
-
-
-
     }
 
     @Override
@@ -183,10 +194,8 @@ public class SettingsFragment extends Fragment {
 
                     installLocalUri = data.getData();
 
-                    String fileName = PickFileHelper.getFileName(getContext(), installLocalUri);
-
-                    TextView textViewInstallLocal = dialogWindow.findViewById(R.id.settings_dialog_install_local);
-                    textViewInstallLocal.setText(String.format("%s%s", textViewInstallLocal.getContentDescription(), fileName));
+                    TextView textViewInstallLocal = dialogWindow.findViewById(R.id.settings_install_dialog_local);
+                    textViewInstallLocal.setText(PickFileHelper.getFileName(getContext(), installLocalUri));
 
                 } catch (Exception e) {
                     Toast.makeText(getContext(), "安装失败：" + e.getMessage(), Toast.LENGTH_LONG).show();

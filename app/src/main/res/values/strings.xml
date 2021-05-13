@@ -29,10 +29,9 @@
     <string name="settings_bound_port">绑定端口</string>
 
     <string name="settings_install_frida">安装Frida：</string>
-    <string name="settings_install_dialog_version">已装版本：</string>
-    <string name="settings_install_dialog_local">本地安装：（选择文件）</string>
-    <string name="settings_install_dialog_local_single">本地安装：</string>
-    <string name="settings_install_dialog_online">在线安装：</string>
-    <string name="settings_install_dialog_online_version">完整版本号</string>
+    <string name="settings_install_dialog_local">本地安装</string>
+    <string name="settings_install_dialog_pick_file">选择文件</string>
+    <string name="settings_install_dialog_online">在线安装</string>
+    <string name="settings_install_dialog_online_version">输入如[12.10.4]的版本号</string>
 
 </resources>
