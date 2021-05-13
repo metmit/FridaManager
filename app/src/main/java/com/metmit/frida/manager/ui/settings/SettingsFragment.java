@@ -1,6 +1,7 @@
 package com.metmit.frida.manager.ui.settings;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.metmit.frida.manager.MainActivity;
 import com.metmit.frida.manager.R;
 import com.metmit.frida.manager.utils.Frida;
 import com.metmit.frida.manager.utils.Helper;
+import com.metmit.frida.manager.utils.PickFileHelper;
 import com.metmit.frida.manager.utils.SpHelper;
 
 public class SettingsFragment extends Fragment {
@@ -123,6 +125,10 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+
+    protected Uri installLocalUri;
+
+
     protected void showFridaInstallDialog() {
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.show();
@@ -144,6 +150,27 @@ public class SettingsFragment extends Fragment {
                 startActivityForResult(intent, PICK_FRIDA_REQUEST_CODE);
             }
         });
+
+
+        dialogWindow.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (installLocalUri != null) {
+                    Frida.installLocal(getContext(), installLocalUri);
+
+                    Frida.version = null;
+                    String version = Frida.getVersion();
+
+                    TextView textViewInstallVersion = dialogWindow.findViewById(R.id.settings_dialog_version);
+                    textViewInstallVersion.setText(String.format("%s%s", textViewInstallVersion.getContentDescription(), version));
+                    alertDialog.dismiss();
+                }
+            }
+        });
+
+
+
     }
 
     @Override
@@ -153,17 +180,13 @@ public class SettingsFragment extends Fragment {
         if (requestCode == PICK_FRIDA_REQUEST_CODE && resultCode == MainActivity.RESULT_OK) {
             if (data != null && data.getData() != null) {
                 try {
-                    Frida.installLocal(getContext(), data.getData());
+
+                    installLocalUri = data.getData();
+
+                    String fileName = PickFileHelper.getFileName(getContext(), installLocalUri);
 
                     TextView textViewInstallLocal = dialogWindow.findViewById(R.id.settings_dialog_install_local);
-                    textViewInstallLocal.setText(String.format("%s%s", textViewInstallLocal.getContentDescription(), "成功"));
-
-                    Frida.version = null;
-                    String version = Frida.getVersion();
-
-                    TextView textViewInstallVersion = dialogWindow.findViewById(R.id.settings_dialog_version);
-                    textViewInstallVersion.setText(String.format("%s%s", textViewInstallVersion.getContentDescription(), version));
-
+                    textViewInstallLocal.setText(String.format("%s%s", textViewInstallLocal.getContentDescription(), fileName));
 
                 } catch (Exception e) {
                     Toast.makeText(getContext(), "安装失败：" + e.getMessage(), Toast.LENGTH_LONG).show();
