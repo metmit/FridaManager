@@ -1,4 +1,4 @@
-package com.metmit.frida.manager.ui.settings;
+package com.metmit.frida.manager.ui;
 
 import android.content.Intent;
 import android.net.Uri;

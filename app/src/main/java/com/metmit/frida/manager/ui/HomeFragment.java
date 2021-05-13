@@ -1,4 +1,4 @@
-package com.metmit.frida.manager.ui.home;
+package com.metmit.frida.manager.ui;
 
 import android.os.Build;
 import android.os.Bundle;
