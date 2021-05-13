@@ -23,8 +23,11 @@ import com.metmit.frida.manager.MainActivity;
 import com.metmit.frida.manager.R;
 import com.metmit.frida.manager.utils.Frida;
 import com.metmit.frida.manager.utils.Helper;
+import com.metmit.frida.manager.utils.HttpHelper;
 import com.metmit.frida.manager.utils.PickFileHelper;
 import com.metmit.frida.manager.utils.SpHelper;
+
+import java.io.File;
 
 public class SettingsFragment extends Fragment {
 
@@ -175,6 +178,13 @@ public class SettingsFragment extends Fragment {
                     }
                 }
                 if (radioCheckedId == R.id.settings_install_dialog_radio_online) {
+                    String version = textViewOnline.getText().toString();
+                    String xzFilename = Frida.getXzFileName(version);
+                    String cacheFileName = getContext().getCacheDir().getAbsolutePath() + File.separator + xzFilename;
+                    String url = String.format("https://github.com/frida/frida/releases/download/%s/%s", version, xzFilename);
+                    File file = HttpHelper.download(url, cacheFileName);
+                    if (file != null)
+                        Helper.log(file.toString());
                 }
 
                 Frida.version = null;

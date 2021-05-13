@@ -30,6 +30,6 @@ public class Helper {
     }
 
     public static void log(String message) {
-        Log.i("frida_manager", message);
+        Log.i("frida_manager", message == null ? "null" : message);
     }
 }

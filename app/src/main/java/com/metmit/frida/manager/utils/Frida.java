@@ -2,6 +2,7 @@ package com.metmit.frida.manager.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 
 import org.tukaani.xz.XZInputStream;
@@ -24,6 +25,19 @@ public class Frida {
 
     public static boolean isExistCommandFile() {
         return Helper.isExistFile(servicePath + commandFile);
+    }
+    
+    public static String getXzFileName(String version) {
+        String systemAbi = Build.SUPPORTED_ABIS[0];
+        String cpuAbi = "";
+        if (systemAbi.contains("arm64")) {
+            cpuAbi = "arm64";
+        } else if (systemAbi.contains("arm")) {
+            cpuAbi = "arm";
+        } else if (systemAbi.contains("x86")) {
+            cpuAbi = "x86";
+        }
+        return String.format("frida-server-%s-android-%s.xz", version, cpuAbi);
     }
 
     public static boolean installLocal(Context context, Uri uri) {
