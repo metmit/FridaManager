@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -82,10 +83,13 @@ public class SettingsFragment extends Fragment {
     protected void showFridaPortDialog(int port) {
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+
         alertDialog.show();
-        alertDialog.setContentView(R.layout.settings_frida_port);
 
         Window window = alertDialog.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+        alertDialog.setContentView(R.layout.settings_frida_port);
 
         EditText editText = (EditText) window.findViewById(R.id.editTextPort);
         editText.setText(String.valueOf(port));
@@ -134,9 +138,11 @@ public class SettingsFragment extends Fragment {
     protected void showFridaInstallDialog() {
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.show();
-        alertDialog.setContentView(R.layout.settings_install_frida);
 
         dialogWindow = alertDialog.getWindow();
+        dialogWindow.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+        alertDialog.setContentView(R.layout.settings_install_frida);
 
         EditText textViewOnline = dialogWindow.findViewById(R.id.settings_install_dialog_online);
 
