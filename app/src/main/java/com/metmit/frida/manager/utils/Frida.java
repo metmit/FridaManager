@@ -107,7 +107,8 @@ public class Frida {
         String[] commands = {
                 "ls -al " + servicePath + commandFile,
                 "chmod +x " + servicePath + commandFile,
-                String.format("%s%s -l 0.0.0.0:%s -D", servicePath, commandFile, getPort())
+                // String.format("%s%s -l 0.0.0.0:%s -D", servicePath, commandFile, getPort()),
+                String.format("%s%s -l 0.0.0.0:%s > %s%s 2>&1 &", servicePath, commandFile, getPort(), servicePath, "frida-server.log")
         };
 
         for (String command : commands) {
